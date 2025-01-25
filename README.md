@@ -58,7 +58,7 @@ git clone https://github.com/esw0116/ODGS.git --recursive
 cd ODGS
 
 # Set Environment
-conda env create --file environment.yml
+conda env create --file environment.yaml
 conda activate ODGS
 pip install submodules/simple-knn
 pip install submodules/odgs-gaussian-rasterization
