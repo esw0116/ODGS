@@ -13,16 +13,16 @@ import os
 import random
 import json
 from utils.system_utils import searchForMaxIteration
-from scene.dataset_readers import sceneLoadTypeCallbacks
-from scene.gaussian_model import GaussianModel
+from scene_perspective.dataset_readers import sceneLoadTypeCallbacks
+from scene_perspective.gaussian_model import GaussianModel
 from arguments import ModelParams
 from utils.camera_utils import cameraList_from_camInfos, camera_to_JSON
 
-
 class Scene:
+
     gaussians : GaussianModel
 
-    def __init__(self, args : ModelParams, gaussians : GaussianModel, load_iteration=None, shuffle=True, resolution_scales=[1.0]):
+    def __init__(self, args : ModelParams, gaussians : GaussianModel, load_iteration=None, shuffle=True, preset=None, resolution_scales=[1.0], rand=False):
         """b
         :param path: Path to colmap scene main folder.
         """
@@ -40,9 +40,16 @@ class Scene:
 
         self.train_cameras = {}
         self.test_cameras = {}
+        self.preset_cameras = {}
 
-        if os.path.exists(os.path.join(args.source_path, "data_extrinsics.json")):
-            scene_info = sceneLoadTypeCallbacks["OpenMVG"](args.source_path, args.white_background, args.eval)
+        if os.path.exists(os.path.join(args.source_path, "cubemap_random")) and rand:
+            print("Random CubeMaps")
+            scene_info = sceneLoadTypeCallbacks["CubeMap"](args.source_path, args.white_background, args.eval, args.use_dense, rand)
+        elif os.path.exists(os.path.join(args.source_path, "cube_data_extrinsics.json")):
+            print("CubeMaps")
+            scene_info = sceneLoadTypeCallbacks["CubeMap"](args.source_path, args.white_background, args.eval, args.use_dense)
+        elif os.path.exists(os.path.join(args.source_path, "data_extrinsics.json")):
+            scene_info = sceneLoadTypeCallbacks["OpenMVG"](args.source_path, args.white_background, args.eval, args.use_dense)
         else:
             assert False, "Could not recognize scene type!"
 
@@ -71,6 +78,9 @@ class Scene:
             self.train_cameras[resolution_scale] = cameraList_from_camInfos(scene_info.train_cameras, resolution_scale, args)
             print("Loading Test Cameras")
             self.test_cameras[resolution_scale] = cameraList_from_camInfos(scene_info.test_cameras, resolution_scale, args)
+            if preset is not None:
+                print("Loading Preset Cameras")
+                self.preset_cameras[resolution_scale] = cameraList_from_camInfos(scene_info.preset_cameras, resolution_scale, args)
 
         if self.loaded_iter:
             self.gaussians.load_ply(os.path.join(self.model_path,
@@ -89,3 +99,6 @@ class Scene:
 
     def getTestCameras(self, scale=1.0):
         return self.test_cameras[scale]
+    
+    def getPresetCameras(self, scale=1.0):
+        return self.preset_cameras[scale]
