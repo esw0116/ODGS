@@ -66,7 +66,7 @@ pip install submodules/odgs-gaussian-rasterization
 
 ## Dataset
 We evaluate 6 datasets by adjusting their resolutions and performing Structure-from-Motion using OpenMVG.  
-For your convenience, we provide :star:[**links to the adjusted datasets**](https://drive.google.com/drive/folders/1xLdy0Zh6K1vAN_WpTWg4RTTUPxxv8RFp?usp=sharing):star: used in our paper.  
+For your convenience, we provide :star:[**links to the adjusted datasets**](https://1drv.ms/f/c/1ac507ce4eb00e92/Eq437jJ76JZFhcHqCw3FZ0sB35A2df6mx16O9Mj_-F8z6Q?e=Jy7MrY):star: used in our paper.  
 **Note**: The authors of 360Roam dataset do not want to distribute thier datasets yet (8 Dec. 2024), so we will not provide here. If you need, please contact them.
 
 For reference, we provide the links to the **original datasets** here.  
